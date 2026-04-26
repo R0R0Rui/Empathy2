@@ -1,0 +1,255 @@
+:root {
+  color-scheme: light;
+  --bg: #f7f7f4;
+  --panel: #ffffff;
+  --text: #202124;
+  --muted: #6f746f;
+  --line: #dedfd8;
+  --accent: #19726b;
+  --accent-strong: #0d5d57;
+  --assistant: #ffffff;
+  --user: #e7f2ef;
+  --danger: #b63f3f;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button,
+textarea {
+  font: inherit;
+}
+
+.shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: 64px 1fr auto;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px clamp(16px, 3vw, 32px);
+  border-bottom: 1px solid var(--line);
+  background: rgba(247, 247, 244, 0.92);
+  backdrop-filter: blur(16px);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.brand-mark {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background:
+    linear-gradient(135deg, #19726b 0 50%, transparent 50%),
+    linear-gradient(315deg, #d55b45 0 50%, #f0bd55 50%);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+.icon-button,
+.send-button {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.icon-button:hover,
+.send-button:hover {
+  border-color: #b8bbb2;
+  transform: translateY(-1px);
+}
+
+.icon-button svg,
+.send-button svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.messages {
+  width: min(880px, 100%);
+  margin: 0 auto;
+  padding: 24px clamp(14px, 3vw, 28px) 120px;
+  overflow: hidden;
+}
+
+.empty-state {
+  min-height: calc(100vh - 220px);
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.empty-state h1 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3.6rem);
+  line-height: 1.05;
+  letter-spacing: 0;
+  font-weight: 750;
+  color: #30332f;
+}
+
+.message {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 22px;
+}
+
+.message.user {
+  justify-items: end;
+}
+
+.bubble {
+  max-width: min(680px, 88%);
+  padding: 13px 15px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--assistant);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.message.user .bubble {
+  background: var(--user);
+  border-color: #c9ddda;
+}
+
+.meta {
+  max-width: min(680px, 88%);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.pill {
+  padding: 3px 7px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.composer {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  width: min(840px, calc(100% - 28px));
+  display: grid;
+  grid-template-columns: 1fr 44px;
+  align-items: end;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 12px 36px rgba(31, 34, 29, 0.12);
+}
+
+.composer textarea {
+  width: 100%;
+  max-height: 170px;
+  min-height: 44px;
+  resize: none;
+  border: 0;
+  outline: 0;
+  padding: 11px 12px;
+  background: transparent;
+  color: var(--text);
+  line-height: 1.45;
+}
+
+.composer textarea::placeholder {
+  color: #878c86;
+}
+
+.send-button {
+  background: var(--accent);
+  color: #ffffff;
+  border-color: var(--accent);
+}
+
+.send-button:hover {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+}
+
+.send-button:disabled,
+.icon-button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+  transform: none;
+}
+
+.typing .bubble {
+  color: var(--muted);
+}
+
+.error .bubble {
+  border-color: rgba(182, 63, 63, 0.35);
+  color: var(--danger);
+  background: #fff8f7;
+}
+
+@media (max-width: 640px) {
+  .shell {
+    grid-template-rows: 58px 1fr auto;
+  }
+
+  .topbar {
+    padding: 9px 14px;
+  }
+
+  .messages {
+    padding-bottom: 112px;
+  }
+
+  .bubble,
+  .meta {
+    max-width: 94%;
+  }
+
+  .composer {
+    bottom: 10px;
+    width: calc(100% - 20px);
+  }
+}

@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.env
+*.log
+unsloth_compiled_cache/
+
+# Local model weights (fetched from Hugging Face by scripts/download_models.py)
+# Anchored to repo root so it does NOT match the app/models/ Python module.
+/models/
+
