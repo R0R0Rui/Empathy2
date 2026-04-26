@@ -1,0 +1,45 @@
+# Extended crisis keyword lexicon for app/understanding/safety_fusion.py
+#
+# This file SUPPLEMENTS app/safety.py (which keeps full authority over the
+# top-level `safety.crisis_detected` flag). We add documented passive
+# ideation phrases here, so safety_flag (used by Understanding layer +
+# scenario_tier) catches them too.
+#
+# Format:
+#   # CATEGORY: <NAME>     -> applies to following lines
+#   one phrase per line, lowercase
+#   Single-word entries match with word boundaries.
+#   Multi-word entries match as substrings.
+
+# CATEGORY: SUICIDAL_IDEATION
+# (overlap with app/safety.py is fine; both layers are allowed to fire)
+better off without me
+everyone would be better off
+world would be better without me
+no reason to live
+nothing left to live for
+not worth being here
+ending my life
+ended my life
+thinking about dying
+thinking of dying
+
+# CATEGORY: SELF_HARM
+cutting myself
+burn myself
+hurt myself
+
+# CATEGORY: SEVERE_HOPELESSNESS
+no way out
+just want it to stop
+want this to be over
+nothing matters anymore
+i give up on everything
+can't keep going
+can't go on
+
+# CATEGORY: VIOLENCE_TO_OTHERS
+hurt someone
+hurt them
+make them pay
+attack someone

@@ -17,10 +17,18 @@ from app.prompting import build_classifier_input, build_generation_messages
 from app.safety import crisis_reply, detect_crisis
 from app.schemas import ChatRequest, ChatResponse, ResetResponse
 from app.session import InMemorySessionStore
+# --- LLM #1 Understanding additions ---------------------------------
+from app.prompting import build_generation_messages_with_understanding
+from app.schemas import UnderstandingPayload
+from app.understanding import UnderstandingAnalyzer
 
 
 STATIC_DIR = settings.project_root / "app" / "static"
 session_store = InMemorySessionStore(max_turns_per_session=settings.max_turns_per_session)
+# UnderstandingAnalyzer is stateless and lightweight: it consumes the
+# GoEmotions classifier output (already produced upstream) plus a few
+# rule-based / lexicon-based modules. No new ML model is loaded here.
+understanding_analyzer = UnderstandingAnalyzer()
 emotion_classifier: Any
 generator: Any
 
@@ -98,8 +106,30 @@ async def chat(request: ChatRequest) -> ChatResponse:
         raise HTTPException(status_code=503, detail=f"Emotion classifier failed: {exc}") from exc
     classifier_ms = (perf_counter() - classifier_started) * 1000.0
 
+    # ---- LLM #1 Understanding layer (additive; failure is non-fatal) ----
+    # We treat the analyzer as best-effort: if anything in the lexicon /
+    # rule-based stack raises, we still return a working /chat reply with
+    # `understanding=None`. Existing clients that ignore `understanding`
+    # are unaffected.
+    understanding_started = perf_counter()
+    understanding_payload: UnderstandingPayload | None = None
+    try:
+        understanding_state = understanding_analyzer.analyze(
+            user_message=request.message,
+            history=history,
+            emotions=emotions,
+        )
+        understanding_payload = UnderstandingPayload(**understanding_state.model_dump())
+    except Exception:
+        understanding_payload = None
+    understanding_ms = (perf_counter() - understanding_started) * 1000.0
+
     generation_ms = 0.0
     crisis_detected = detect_crisis(request.message)
+    # --- LLM #1 Understanding additions: allow understanding layer
+    # to ESCALATE crisis_detected, never to lower it (one-way escalation).
+    if understanding_payload is not None and understanding_payload.safety_flag in {"medium", "high"}:
+        crisis_detected = True
     if crisis_detected:
         reply = crisis_reply()
     else:
@@ -108,6 +138,16 @@ async def chat(request: ChatRequest) -> ChatResponse:
             history=history,
             emotions=emotions,
         )
+        # --- LLM #1 Understanding additions: if the analyzer ran,
+        # rebuild `messages` using the wrapper that injects the
+        # understanding payload. Otherwise, the line above stays in effect.
+        if understanding_payload is not None:
+            messages = build_generation_messages_with_understanding(
+                message=request.message,
+                history=history,
+                emotions=emotions,
+                understanding=understanding_payload.model_dump(),
+            )
         generation_started = perf_counter()
         try:
             reply = await asyncio.to_thread(generator.generate, messages)
@@ -125,8 +165,10 @@ async def chat(request: ChatRequest) -> ChatResponse:
             "classifier_ms": round(classifier_ms, 2),
             "generation_ms": round(generation_ms, 2),
             "total_ms": round(total_ms, 2),
+            "understanding_ms": round(understanding_ms, 2),
         },
         safety={"crisis_detected": crisis_detected},
+        understanding=understanding_payload,
     )
 
 
