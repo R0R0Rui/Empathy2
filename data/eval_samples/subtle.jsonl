@@ -1,0 +1,7 @@
+{"text": "I just stayed in bed today. Didn't really do anything.", "expected_tier": "subtle", "note": "behavioral marker; no explicit feeling word"}
+{"text": "Yeah... I guess. Whatever.", "expected_tier": "subtle", "note": "tone signals resignation"}
+{"text": "It's fine. I'm fine. Everything is fine.", "expected_tier": "subtle", "note": "repetition + dismissal pattern"}
+{"text": "I haven't been hungry for a while. Hard to focus too.", "expected_tier": "subtle", "note": "somatic / cognitive signs without naming feeling"}
+{"text": "My boss said the project went well. I guess I should be happy.", "expected_tier": "subtle", "note": "should-language → suppressed feeling"}
+{"text": "Three meetings today. Two tomorrow. The week's basically over before it started.", "expected_tier": "subtle", "note": "schedule overload framed flatly"}
+{"text": "I stayed in my room all weekend. My friends went out, but I just kept saying I was busy.", "expected_tier": "subtle", "note": "behavioral withdrawal + social avoidance"}

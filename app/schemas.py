@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 from pydantic import BaseModel, Field
 
 
@@ -28,6 +30,43 @@ class PerformancePayload(BaseModel):
     classifier_ms: float
     generation_ms: float
     total_ms: float
+    # Optional: time spent in the Understanding layer (LLM #1 fusion).
+    # Defaults to 0.0 if the analyzer is disabled.
+    understanding_ms: float = 0.0
+
+
+# ---------------------------------------------------------------------------
+# Understanding (LLM #1) layer — additive, optional
+# ---------------------------------------------------------------------------
+# These mirror app.understanding.schemas.UnderstandingState but live here
+# so the API contract stays in one place and FastAPI / OpenAPI can render
+# the schema without importing the internal module.
+
+class BigFivePayload(BaseModel):
+    openness: float = Field(ge=0.0, le=1.0)
+    conscientiousness: float = Field(ge=0.0, le=1.0)
+    extraversion: float = Field(ge=0.0, le=1.0)
+    agreeableness: float = Field(ge=0.0, le=1.0)
+    neuroticism: float = Field(ge=0.0, le=1.0)
+
+
+class UnderstandingPayload(BaseModel):
+    primary_emotion: str
+    secondary_emotions: list[str] = Field(default_factory=list)
+    emotion_intensity: float = Field(ge=0.0, le=1.0)
+    valence: float = Field(ge=-1.0, le=1.0)
+    arousal: float = Field(ge=0.0, le=1.0)
+    intent: str
+    is_implicit: bool
+    scenario_tier: str
+    safety_flag: str
+    crisis_signals: list[str] = Field(default_factory=list)
+    support_need: str
+    evidence: list[str] = Field(default_factory=list)
+    personality: BigFivePayload | None = None
+    personality_confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    pii_redacted_text: str
+    layer_outputs: dict[str, Any] = Field(default_factory=dict)
 
 
 class ChatResponse(BaseModel):
@@ -36,6 +75,9 @@ class ChatResponse(BaseModel):
     emotions: EmotionPayload
     performance: PerformancePayload
     safety: SafetyPayload = Field(default_factory=SafetyPayload)
+    # Additive: present iff the Understanding analyzer ran successfully.
+    # Existing clients that ignore unknown fields keep working.
+    understanding: UnderstandingPayload | None = None
 
 
 class ResetResponse(BaseModel):

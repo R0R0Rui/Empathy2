@@ -1,0 +1,7 @@
+{"text": "I'm so happy today, I got the job I applied for!", "expected_tier": "common", "expected_emotion_family": "joy"}
+{"text": "I'm really sad. I just feel like nothing is going right.", "expected_tier": "common", "expected_emotion_family": "sadness"}
+{"text": "I'm so anxious about the presentation tomorrow.", "expected_tier": "common", "expected_emotion_family": "fear"}
+{"text": "I am furious with my roommate; she ate my leftovers again.", "expected_tier": "common", "expected_emotion_family": "anger"}
+{"text": "I feel so lonely tonight. None of my friends replied to my messages.", "expected_tier": "common", "expected_emotion_family": "sadness"}
+{"text": "I'm really grateful for the support my family gave me this week.", "expected_tier": "common", "expected_emotion_family": "joy"}
+{"text": "I'm exhausted. Three meetings back-to-back drained me.", "expected_tier": "common", "expected_emotion_family": "sadness"}
