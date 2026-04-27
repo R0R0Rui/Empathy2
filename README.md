@@ -116,3 +116,14 @@ python scripts/benchmark_chat.py --runs 10 --warmup 1
 The backend loads the base model from `EMPATHY_LLM_BASE_MODEL`, currently `unsloth/Qwen2.5-7B-Instruct-bnb-4bit`, and applies the adapter from `EMPATHY_LLM_ADAPTER_MODEL`, currently `JamieYCR/qwen25-7b-empathy`.
 
 The default `.env` is tuned for your RTX 4090 path: Unsloth 4-bit Qwen2.5-7B, `bfloat16`, and your Hugging Face LoRA adapter. There is no retrieval path and no stub inference path in this project right now.
+
+## Evaluation
+
+We implement a failure-aware refinement pipeline:
+
+1. Detect failure types (validation rules)
+2. Map failures to repair strategies
+3. Trigger conditional rewrite
+4. Re-validate improved responses
+
+Example outputs are shown in `data/presentation_refinement_table.csv`.
