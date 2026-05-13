@@ -2,7 +2,7 @@
 
 FastAPI backend for the two-stage empathy agent:
 
-1. Classify emotion with the GoEmotions classifier at `models/goemotions-production` (downloaded from Hugging Face — see Setup below).
+1. Classify emotion with the trained GoEmotions classifier at `JamieYCR/goemotions-chatbot-emotion-classifier` (downloaded from Hugging Face — see Setup below).
 2. Build an empathy prompt with recent in-memory session history.
 3. Generate a response with `unsloth/Qwen2.5-7B-Instruct-bnb-4bit` plus the Hugging Face PEFT LoRA adapter `JamieYCR/qwen25-7b-empathy`.
 
